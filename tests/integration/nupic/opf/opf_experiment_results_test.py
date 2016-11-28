@@ -58,7 +58,10 @@ class OPFExperimentResultsTest(unittest.TestCase):
 
     """
 
-    opfDir = resource_filename("nupic", os.path.join("..", "examples", "opf"))
+    nupic_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             "..", "..", "..", "..")
+
+    opfDir = os.path.join(nupic_dir, "examples", "opf")
 
     testDir = opfDir
 
@@ -96,8 +99,7 @@ class OPFExperimentResultsTest(unittest.TestCase):
     # Run from the test directory so that we can find our experiments
     os.chdir(testDir)
 
-    runExperiment = resource_filename("nupic", os.path.join("..", 
-                                "scripts", "run_opf_experiment.py"))
+    runExperiment = os.path.join(nupic_dir, "scripts", "run_opf_experiment.py")
 
     # A list of experiments to run.  Valid attributes:
     #   experimentDir - Required, path to the experiment directory containing
@@ -123,7 +125,7 @@ class OPFExperimentResultsTest(unittest.TestCase):
         'results': {
           ('DefaultTask.TemporalMultiStep.predictionLog.csv',
            "multiStepBestPredictions:multiStep:errorMetric='aae':steps=1:window=200:field=field2"):
-                    (0.0, 0.525),
+                    (0.0, 0.58),
         }
       },
 
@@ -142,7 +144,7 @@ class OPFExperimentResultsTest(unittest.TestCase):
         'results': {
           ('DefaultTask.TemporalMultiStep.predictionLog.csv',
            "multiStepBestPredictions:multiStep:errorMetric='aae':steps=1:window=200:field=field2"):
-                    (0.0, 3.65),
+                    (0.0, 3.76),
         }
       },
 
@@ -209,7 +211,7 @@ class OPFExperimentResultsTest(unittest.TestCase):
              'classification:avg_err:window=200'): (0.0, 0.045),
 
             ('OnlineLearning.TemporalClassification.predictionLog.csv',
-             'classConfidences:neg_auc:computeEvery=10:window=200'): (-1.0, -0.99),
+             'classConfidences:neg_auc:computeEvery=10:window=200'): (-1.0, -0.98),
             }
       },
 
@@ -269,7 +271,7 @@ class OPFExperimentResultsTest(unittest.TestCase):
         'results': {
             ('DefaultTask.NontemporalClassification.predictionLog.csv',
              "multiStepBestPredictions:multiStep:errorMetric='aae':steps=0:window=100:field=classification"): 
-                    (0.0, 0.01),
+                    (-1e-10, 0.01),
             }
       },
 
@@ -282,7 +284,7 @@ class OPFExperimentResultsTest(unittest.TestCase):
       { 'experimentDir': 'experiments/anomaly/temporal/simple',
         'results': {
             ('DefaultTask.TemporalAnomaly.predictionLog.csv',
-             'anomalyScore:passThruPrediction:window=1000:field=f'): (0.13,
+             'anomalyScore:passThruPrediction:window=1000:field=f'): (0.12,
                                                                       0.14),
           }
       },

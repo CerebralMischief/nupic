@@ -24,23 +24,20 @@ echo
 echo Running before_install-osx.sh...
 echo
 
-# Get Darwin64 libs for OSX
-echo ">>> Cloning nupic-darwin64 at 40eee5d8b4f79fe52b282c393c8e1a1f5ba7a906..."
-git clone https://github.com/numenta/nupic-darwin64.git
-(cd nupic-darwin64 && git reset --hard 40eee5d8b4f79fe52b282c393c8e1a1f5ba7a906) || exit
-echo ">>> Activating nupic-darwin64..."
-source nupic-darwin64/bin/activate
+# Upgrade setuptools (for PEP-508 support used in extras_require)
+pip install --upgrade --ignore-installed setuptools
 
-# TODO: remove after nupic-darwin64 has been updated
-pip install --upgrade pip --user --quiet
-pip uninstall numpy --yes
-pip install wheel --user -q
-pip install --use-wheel numpy==1.9.2 --user -q
-PY_VERSION=`python -c 'import sys; print(sys.version[:3])'`
-export PYTHONPATH="/Users/travis/Library/Python/$PY_VERSION/lib/python/site-packages:$PYTHONPATH"
+pip install --upgrade --ignore-installed pip
+
+pip install wheel
+
+python -c 'import pip; print "pip version=", pip.__version__'
+python -c 'import setuptools; print "setuptools version=", setuptools.__version__'
+python -c 'import wheel; print "wheel version=", wheel.__version__'
 
 # Install and start MySQL on OSX
 echo ">>> brew install mysql"
+brew update
 brew install mysql
 echo ">>> mysql.server start"
 mysql.server start

@@ -32,21 +32,14 @@ if [ $CC == 'gcc' ]; then
     export CXX='g++-4.8'
 fi
 
-echo ">>> Installing nupic-linux64..."
-git clone https://github.com/numenta/nupic-linux64.git
-(cd nupic-linux64 && git reset --hard 99863c7da8b923c57bb4e59530ab087c91fd3992)
-source nupic-linux64/bin/activate
+# Upgrade setuptools (for PEP-508 support used in extras_require)
+pip install --upgrade --ignore-installed setuptools
 
-# TODO: remove after nupic-linux64 has been updated
-pip install --upgrade pip --user --quiet
-pip uninstall numpy --yes
-pip install numpy==1.9.2 --user --quiet
+pip install --upgrade --ignore-installed pip
 
-# Assuming pip 1.5.X is installed.
-echo "pip install wheel --user"
-pip install wheel --user -q
+pip install wheel
 
-# Workaround for multiprocessing.Queue SemLock error from run_opf_bechmarks_test.
-# See: https://github.com/travis-ci/travis-cookbooks/issues/155
-# Commented out to test to see if it works witout it in container mode.
-# sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
+python -c 'import pip; print "pip version=", pip.__version__'
+python -c 'import setuptools; print "setuptools version=", setuptools.__version__'
+python -c 'import wheel; print "wheel version=", wheel.__version__'
+

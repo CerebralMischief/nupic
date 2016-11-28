@@ -27,10 +27,15 @@ import tempfile
 import unittest2 as unittest
 
 from nupic.encoders.multi import MultiEncoder
-from nupic.encoders import ScalarEncoder, SDRCategoryEncoder
+from nupic.encoders import ScalarEncoder, AdaptiveScalarEncoder, SDRCategoryEncoder
 from nupic.data.dictutils import DictObj
 
-from nupic.encoders.multi_capnp import MultiEncoderProto
+try:
+  import capnp
+except ImportError:
+  capnp = None
+if capnp:
+  from nupic.encoders.multi_capnp import MultiEncoderProto
 
 
 
@@ -87,6 +92,8 @@ class MultiEncoderTest(unittest.TestCase):
 
 
 
+  @unittest.skipUnless(
+      capnp, "pycapnp is not installed, skipping serialization test.")
   def testReadWrite(self):
     original = MultiEncoder()
     original.addEncoder("dow",
@@ -94,8 +101,8 @@ class MultiEncoderTest(unittest.TestCase):
                                       periodic=True, name="day of week",
                                       forced=True))
     original.addEncoder("myval",
-                        ScalarEncoder(w=5, resolution=1, minval=1, maxval=10,
-                                      periodic=False, name="aux", forced=True))
+                        AdaptiveScalarEncoder(n=50, w=5, resolution=1, minval=1, maxval=10,
+                                              periodic=False, name="aux", forced=True))
     originalValue = DictObj(dow=3, myval=10)
     output = original.encode(originalValue)
 

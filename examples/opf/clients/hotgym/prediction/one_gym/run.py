@@ -116,16 +116,19 @@ def runIoThroughNupic(inputData, model, gymName, plot):
 
     if counter % 100 == 0:
       print "Read %i lines..." % counter
-      print ("After %i records, 1-step altMAPE=%f", counter,
+      print ("After %i records, 1-step altMAPE=%f" % (counter,
               result.metrics["multiStepBestPredictions:multiStep:"
                              "errorMetric='altMAPE':steps=1:window=1000:"
-                             "field=kw_energy_consumption"])
- 
+                             "field=kw_energy_consumption"]))
+
     if plot:
       result = shifter.shift(result)
 
     prediction = result.inferences["multiStepBestPredictions"][1]
     output.write([timestamp], [consumption], [prediction])
+
+    if plot and counter % 20 == 0:
+        output.refreshGUI()
 
   inputFile.close()
   output.close()

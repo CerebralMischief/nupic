@@ -28,7 +28,6 @@ explicitly updated to match the new results.
 import collections
 import csv
 import os
-import pkg_resources
 import shutil
 import unittest
 
@@ -40,14 +39,11 @@ class HotgymRegressionTest(unittest.TestCase):
   """Hotgym regression test to validate that predictions don't change."""
 
 
-  @unittest.skip("This currently fails on Travis. The issue is being tracked "
-                 "at: https://github.com/numenta/nupic/issues/2358")
   def testHotgymRegression(self):
-    experimentDir = pkg_resources.resource_filename(
-        "nupic",
-        os.path.join(os.pardir, "examples", "opf", "experiments", "multistep",
-                     "hotgym")
-    )
+    experimentDir = os.path.join(
+      os.path.dirname(__file__).partition(
+        os.path.normpath("tests/integration/nupic/opf"))[0],
+        "examples", "opf", "experiments", "multistep", "hotgym")
 
     resultsDir = os.path.join(experimentDir, "inference")
     savedModelsDir = os.path.join(experimentDir, "savedmodels")
@@ -59,15 +55,15 @@ class HotgymRegressionTest(unittest.TestCase):
       with open(resultsPath) as f:
         reader = csv.reader(f)
         headers = reader.next()
-        self.assertEqual(headers[12],
+        self.assertEqual(headers[14],
                          "multiStepBestPredictions:multiStep:errorMetric='aae':"
                          "steps=1:window=1000:field=consumption")
         lastRow = collections.deque(reader, 1)[0]
 
-      # Changes that affect prediction results will cause this test to fail.
-      # If the change is understood and reviewers agree that there has not been a
+      # Changes that affect prediction results will cause this test to fail. If
+      # the change is understood and reviewers agree that there has not been a
       # regression then this value can be updated to reflect the new result.
-      self.assertAlmostEqual(float(lastRow[12]), 6.0933712258)
+      self.assertAlmostEqual(float(lastRow[14]), 5.89191585339)
 
     finally:
       shutil.rmtree(resultsDir, ignore_errors=True)

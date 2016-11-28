@@ -28,9 +28,12 @@ import unittest
 
 from nupic.utils import MovingAverage
 
-# Import capnp to force import hook
-import capnp
-from nupic.movingaverage_capnp import MovingAverageProto
+try:
+  import capnp
+except ImportError:
+  capnp = None
+if capnp:
+  from nupic.movingaverage_capnp import MovingAverageProto
 
 
 
@@ -123,11 +126,13 @@ class UtilsTest(unittest.TestCase):
     self.assertListEqual(ma.getSlidingWindow(), [])
 
 
+  @unittest.skipUnless(
+      capnp, "pycapnp is not installed, skipping serialization test.")
   def testMovingAverageReadWrite(self):
     ma = MovingAverage(windowSize=3)
 
     ma.next(3)
-    ma.next(4)
+    ma.next(4.5)
     ma.next(5)
 
     proto1 = MovingAverageProto.new_message()
@@ -154,7 +159,7 @@ class UtilsTest(unittest.TestCase):
     ma = MovingAverage(windowSize=3)
 
     ma.next(3)
-    ma.next(4)
+    ma.next(4.5)
     ma.next(5)
 
     stored = pickle.dumps(ma)

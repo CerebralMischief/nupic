@@ -6,33 +6,40 @@ The Numenta Platform for Intelligent Computing (**NuPIC**) is a machine intellig
 
 For more information, see [numenta.org](http://numenta.org) or the [NuPIC wiki](https://github.com/numenta/nupic/wiki).
 
-## Installing NuPIC 0.2.11
+## Installing NuPIC 0.5.5
 
 NuPIC binaries are available for:
 
-- Linux x86 64b
+- Linux x86 64bit
 - OS X 10.9
 - OS X 10.10
+- Windows 64bit
 
-#### Dependencies
+### Dependencies
 
-- [Python 2.7 & development headers](https://docs.python.org/devguide/setup.html#build-dependencies)
-- [pip](https://pypi.python.org/pypi/pip)
-- [wheel](http://pythonwheels.com)
+The following dependencies are required to install NuPIC on all operating systems.
+
+- [Python 2.7](https://www.python.org/)
+- [pip](https://pip.pypa.io/en/stable/installing/)>=8.1.2
+- [setuptools](https://setuptools.readthedocs.io)>=25.2.0
+- [wheel](http://pythonwheels.com)>=0.29.0
 - [numpy](http://www.numpy.org/)
+- C++ 11 compiler like [gcc](https://gcc.gnu.org/) (4.8+) or [clang](http://clang.llvm.org/)
 
-### Mac OS X
+Additional OS X requirements:
+
+- [Xcode command line tools](https://developer.apple.com/library/ios/technotes/tn2339/_index.html)
+
+### Install
+
+Run the following to install NuPIC:
 
     pip install nupic
 
-### Linux
+### Test
 
-> The Linux wheel file is hosted on AWS S3 instead of on the standard PyPi servers because [Linux wheels are not allowed to be uploaded to pypi](https://bitbucket.org/pypa/pypi-metadata-formats/issue/15/enhance-the-platform-tag-definition-for) yet.
-
-    # Install the C++ bindings for nupic.core.
-    pip install https://s3-us-west-2.amazonaws.com/artifacts.numenta.org/numenta/nupic.core/releases/nupic.bindings/nupic.bindings-0.1.5-cp27-none-linux_x86_64.whl
-    # Install NuPIC.
-    pip install https://s3-us-west-2.amazonaws.com/artifacts.numenta.org/numenta/nupic/releases/nupic-0.2.11-py2-none-any.whl
+    # From the root of the repo:
+    py.test tests/unit
 
 ### _Having problems?_
 
@@ -51,6 +58,9 @@ For details about checking out this repository and building in your local enviro
 
  Please see the [Contributing to NuPIC](https://github.com/numenta/nupic/wiki/Contributing-to-NuPIC) wiki page.
 
- * Build: [![Build Status](https://travis-ci.org/numenta/nupic.png?branch=master)](https://travis-ci.org/numenta/nupic)
+ * Build:
+[![Build Status](https://travis-ci.org/numenta/nupic.png?branch=master)](https://travis-ci.org/numenta/nupic)
+[![AppVeyor Status](https://ci.appveyor.com/api/projects/status/4toemh0qtr21mk6b/branch/master?svg=true)](https://ci.appveyor.com/project/numenta-ci/nupic/branch/master)
  * Unit Test Coverage: [![Coverage Status](https://coveralls.io/repos/numenta/nupic/badge.png?branch=master)](https://coveralls.io/r/numenta/nupic?branch=master)
  * [Regression Tests](https://github.com/numenta/nupic.regression): [![Build Status](https://travis-ci.org/numenta/nupic.regression.svg?branch=master)](https://travis-ci.org/numenta/nupic.regression)
+ * To cite this codebase: [![DOI](https://zenodo.org/badge/19461/numenta/nupic.svg)](https://zenodo.org/badge/latestdoi/19461/numenta/nupic)

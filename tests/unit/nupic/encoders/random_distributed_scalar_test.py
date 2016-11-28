@@ -33,9 +33,15 @@ from nupic.support.unittesthelpers.algorithm_test_helpers import getSeed
 from nupic.encoders.random_distributed_scalar import (
   RandomDistributedScalarEncoder
 )
-from nupic.encoders.random_distributed_scalar_capnp import (
-  RandomDistributedScalarEncoderProto
-)
+
+try:
+  import capnp
+except ImportError:
+  capnp = None
+if capnp:
+  from nupic.encoders.random_distributed_scalar_capnp import (
+    RandomDistributedScalarEncoderProto
+  )
 
 
 
@@ -451,10 +457,11 @@ class RandomDistributedScalarEncoderTest(unittest.TestCase):
       encoder.encode("String")
 
 
-
-  def testCapNProtoSerialization(self):
-    original = RandomDistributedScalarEncoder(name="encoder", resolution=1.0, w=23,
-                                              n=500, offset=0.0)
+  @unittest.skipUnless(
+      capnp, "pycapnp is not installed, skipping serialization test.")
+  def testWriteRead(self):
+    original = RandomDistributedScalarEncoder(
+        name="encoder", resolution=1.0, w=23, n=500, offset=0.0)
 
     originalValue = original.encode(1)
 
@@ -477,9 +484,11 @@ class RandomDistributedScalarEncoderTest(unittest.TestCase):
     self.assertEqual(encoder.verbosity, original.verbosity)
     self.assertEqual(encoder.minIndex, original.minIndex)
     self.assertEqual(encoder.maxIndex, original.maxIndex)
-    self.assertTrue(numpy.array_equal(encoder.encode(1), originalValue))
-    self.assertEqual(original.decode(encoder.encode(1)),
-                     encoder.decode(original.encode(1)))
+    encodedFromOriginal = original.encode(1)
+    encodedFromNew = encoder.encode(1)
+    self.assertTrue(numpy.array_equal(encodedFromNew, originalValue))
+    self.assertEqual(original.decode(encodedFromNew),
+                     encoder.decode(encodedFromOriginal))
     self.assertEqual(original.random.getSeed(), encoder.random.getSeed())
 
     for key, value in original.bucketMap.items():

@@ -41,16 +41,14 @@ from nupic.support.unittesthelpers.testcasebase import (
   TestCaseBase as HelperTestCaseBase)
 from nupic.swarming import HypersearchWorker
 from nupic.swarming.permutationhelpers import PermuteChoices
-from nupic.swarming.hypersearch.utils import generatePersistentJobGUID, \
-                                             rCopy
+from nupic.swarming.utils import generatePersistentJobGUID, rCopy
 from nupic.frameworks.opf.expdescriptionapi import OpfEnvironment
 from nupic.swarming.exp_generator import ExpGenerator
 from nupic.frameworks.opf.opfutils import (InferenceType,
                                            InferenceElement)
 
 LOGGER = logging.getLogger(__name__)
-HOTGYM_INPUT = resource_filename("nupic.datafiles",
-                                  os.path.join("extra", "hotgym", "hotgym.csv"))
+HOTGYM_INPUT = "extra/hotgym/hotgym.csv"
 
 
 g_debug = False
