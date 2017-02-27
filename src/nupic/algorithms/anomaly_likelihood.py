@@ -85,7 +85,7 @@ class AnomalyLikelihood(object):
     claLearningPeriod and learningPeriod are specifying the same variable,
     although claLearningPeriod is a deprecated name for it.
 
-    @param learningPeriod (claLeraningPeriod: deprecated) - (int) the number of
+    @param learningPeriod (claLearningPeriod: deprecated) - (int) the number of
       iterations required for the algorithm to learn the basic patterns in the
       dataset and for the anomaly score to 'settle down'. The default is based
       on empirical observations but in reality this could be larger for more
@@ -478,7 +478,7 @@ def estimateAnomalyLikelihoods(anomalyScores,
   # Estimate likelihoods based on this distribution
   likelihoods = numpy.array(dataValues, dtype=float)
   for i, s in enumerate(dataValues):
-    likelihoods[i] = normalProbability(s, distributionParams)
+    likelihoods[i] = tailProbability(s, distributionParams)
 
   # Filter likelihood values
   filteredLikelihoods = numpy.array(
@@ -569,7 +569,7 @@ def updateAnomalyLikelihoods(anomalyScores,
       MovingAverage.compute(historicalValues, total, v[2], windowSize)
     )
     aggRecordList[i] = newAverage
-    likelihoods[i]   = normalProbability(newAverage, params["distribution"])
+    likelihoods[i]   = tailProbability(newAverage, params["distribution"])
 
   # Filter the likelihood values. First we prepend the historical likelihoods
   # to the current set. Then we filter the values.  We peel off the likelihoods
@@ -729,11 +729,13 @@ def nullDistribution(verbosity=0):
 
 
 
-def normalProbability(x, distributionParams):
+def tailProbability(x, distributionParams):
   """
-  Given the normal distribution specified by the mean and standard deviation in
-  distributionParams, return the probability of getting samples > x.
-  This is the Q-function: the tail probability of the normal distribution.
+  Given the normal distribution specified by the mean and standard deviation
+  in distributionParams, return the probability of getting samples further
+  from the mean. For values above the mean, this is the probability of getting
+  samples > x and for values below the mean, the probability of getting
+  samples < x. This is the Q-function: the tail probability of the normal distribution.
 
   :param distributionParams: dict with 'mean' and 'stdev' of the distribution
   """
@@ -743,7 +745,7 @@ def normalProbability(x, distributionParams):
   if x < distributionParams["mean"]:
     # Gaussian is symmetrical around mean, so flip to get the tail probability
     xp = 2 * distributionParams["mean"] - x
-    return 1.0 - normalProbability(xp, distributionParams)
+    return tailProbability(xp, distributionParams)
 
   # Calculate the Q function with the complementary error function, explained
   # here: http://www.gaussianwaves.com/2012/07/q-function-and-error-functions
